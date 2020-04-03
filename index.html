@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>canvas</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      var canvas = document.getElementById("canvas");
+      canvas.width = document.documentElement.clientWidth;
+      canvas.height = document.documentElement.clientHeight;
+
+      // 画线
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "blue";
+      ctx.strokeStyle = ctx.fillStyle;
+
+      var painting = false;
+      canvas.onmousedown = () => {
+        painting = true;
+      };
+      canvas.onmouseup = () => {
+        painting = false;
+      };
+      canvas.onmousemove = e => {
+        if (painting) {
+          ctx.beginPath();
+          ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+        } else {
+        }
+      };
+    </script>
+  </body>
+</html>
