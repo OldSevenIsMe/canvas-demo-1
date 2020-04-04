@@ -9,31 +9,52 @@
   <body>
     <canvas id="canvas"></canvas>
     <script>
-      var canvas = document.getElementById("canvas");
+      let canvas = document.getElementById("canvas");
       canvas.width = document.documentElement.clientWidth;
-      canvas.height = document.documentElement.clientHeight;
+      canvas.height = document.documentElement.clientHeight; //让canvas的宽高和可视界面一样
 
-      // 画线
-      var ctx = canvas.getContext("2d");
+      let ctx = canvas.getContext("2d");
       ctx.fillStyle = "blue";
       ctx.strokeStyle = ctx.fillStyle;
+      ctx.lineWidth = 10;
+      ctx.lineCap = "round"; //线段末端以圆形结束。
 
-      var painting = false;
-      canvas.onmousedown = () => {
-        painting = true;
-      };
-      canvas.onmouseup = () => {
-        painting = false;
-      };
-      canvas.onmousemove = e => {
-        if (painting) {
-          ctx.beginPath();
-          ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
-          ctx.stroke();
-          ctx.fill();
-        } else {
-        }
-      };
+      let painting = false; //纪录鼠标是否点击
+
+      let last; //纪录上一个位置
+
+      let isTouchDevice = "ontouchstart" in document.documentElement; // 判断是否是在触摸屏中
+
+      if (isTouchDevice) {
+        canvas.ontouchstart = (e) => {
+          last = [e.touches[0].clientX, e.touches[0].clientY];
+        };
+        canvas.ontouchmove = (e) => {
+          let x = e.touches[0].clientX;
+          let y = e.touches[0].clientY;
+          drawLine(last[0], last[1], x, y);
+          last = [x, y];
+        };
+      } else {
+        canvas.onmousedown = (e) => {
+          painting = true;
+          last = [e.clientX, e.clientY];
+        };
+        canvas.onmouseup = () => {
+          painting = false;
+        };
+        canvas.onmousemove = (e) => {
+          if (painting) {
+            drawLine(last[0], last[1], e.clientX, e.clientY);
+            last = [e.clientX, e.clientY];
+          }
+        };
+      }
+      function drawLine(x1, y1, x2, y2) {
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      } // 画线
     </script>
   </body>
 </html>
